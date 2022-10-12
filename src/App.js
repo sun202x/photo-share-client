@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Users from './Users';
+import { BrowserRouter } from 'react-router-dom';
+import AuthorizedUser from './AuthorizedUser';
+import { gql } from 'apollo-boost';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+// 하위 컴포넌트에서 사용하게 될 쿼리
+export const ROOT_QUERY = gql`
+    query allUsers {
+        totalUsers        
+        allUsers { ...userInfo }
+        me { ...userInfo }
+    }
+
+    # user 필드를 정의하기 위한 fragment 생성
+    fragment userInfo on User {
+        githubLogin
+        name
+        avatar
+    }
+`;
+
+const App = () =>
+    <BrowserRouter>
+        <div>
+            <AuthorizedUser />
+            <Users />
+        </div>
+    </BrowserRouter>
 
 export default App;
