@@ -13,8 +13,7 @@ const GITHUB_AUTH_MUTATION = gql`
 
 class AuthorizedUser extends Component {
 
-    state = { signingIn: false }
-
+    state = { signingIn: false };
     clientID = '';
     clientSecret = '';
 
@@ -26,9 +25,8 @@ class AuthorizedUser extends Component {
 
     componentDidMount() {
         if (window.location.search.match(/code=/)) {
-            const code = window.location.search.replace("?code=", "");
-
             this.setState({ signingIn: true });
+            const code = window.location.search.replace("?code=", "");
             this.githubAuthMutation({ 
                 variables: { 
                     code,
@@ -40,10 +38,9 @@ class AuthorizedUser extends Component {
     }
 
     logout = () => {
-        const data = this.props.client.readQuery({ query: ROOT_QUERY });
-        data.me = null;
-
         localStorage.removeItem('token');
+        let data = this.props.client.readQuery({ query: ROOT_QUERY });
+        data.me = null;
         this.props.client.writeQuery({ query: ROOT_QUERY, data });
     }
 
@@ -57,19 +54,19 @@ class AuthorizedUser extends Component {
         return (
             <Mutation mutation={GITHUB_AUTH_MUTATION}
                 update={this.authorizationComplete}
-                refetchQueries={[{ query: ROOT_QUERY }]}
-                >
+                refetchQueries={[{ query: ROOT_QUERY }]}>
                 {mutation => {
-                    // mutation을 호출하기 위해 변수에 저장
                     this.githubAuthMutation = mutation;
+
                     return (
                         <Me signingIn={this.state.signingIn}
                             requestCode={this.requestCode}
                             logout={this.logout} />
-                    )
+                    );
                 }}
             </Mutation>
-        );
+
+        )
     }
 }
 
